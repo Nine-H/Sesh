@@ -1,7 +1,7 @@
 using Gst;
 
 class FFTStreamer {
-    public signal void fft_update ();    
+    public signal void fft_update (float[] fft);    
     
     private Gst.Pipeline pipeline;
     private Gst.Element source;
@@ -49,18 +49,21 @@ class FFTStreamer {
 	    //write me :D
 	}
 	
+	private float[] get_value_array(Gst.ValueArray gst_array) {
+	    float[gst_array.get_size()] array = {};
+	    for (int i = 0; i < gst_array.get_size(0); i++) {
+	        array[i] = gst_array.get_value(0, i);
+	    };
+	    return array;
+	}
+	
 	private bool bus_callback (Gst.Bus bus, Gst.Message message) {
 		switch (message.type) {
 		    case Gst.MessageType.ELEMENT:
-		        GLib.Value magnitude = message.get_structure ().copy ().get_value ("magnitude");
-		        /*
-		        float[] spectrum = {};
-		        for (int i = 0; i < magnitude.get_size(); i++) {
-		            spectrum.append(magnitude.get_value(0).get_value(i));
-		            //FIXME: this ain't how to add shit to arrays in vala.
-		        }*/
-		        stdout.printf ("%s\n\n", magnitude.strdup_contents ());
-		        print (magnitude.type().name());
+		        Gst.ValueArray magnitude = message.get_structure ().copy ().get_value ("magnitude");
+		        //stdout.printf ("%s\n\n", magnitude.strdup_contents ());
+		        //print (magnitude.type().name());
+		        fft_update(get_value_array (magnitude));
 		        break;
 		    case Gst.MessageType.STATE_CHANGED:
 		        //stdout.printf ("hummm");

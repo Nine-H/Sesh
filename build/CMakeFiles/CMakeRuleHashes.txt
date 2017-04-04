@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-b2c49c4447c14c3f0cda7529773341aa ValaGL.Core/Camera.c
-a9954e0956dd1d27e003f2dcaea42fcb sesh_valac.stamp

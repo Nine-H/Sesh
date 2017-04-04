@@ -19,21 +19,16 @@ pkg_check_modules(DEPS REQUIRED
     gtk+-3.0
     granite
     gdk-3.0
-    #glepoxy
     gstreamer-1.0
 )
 
 add_definitions(${DEPS_CFLAGS})
-link_libraries(${DEPS_LIBRARIES})
+link_libraries(${DEPS_LIBRARIES} -lm -lepoxy)
 link_directories(${DEPS_LIBRARY_DIRS})
 
 find_package(Vala REQUIRED)
 include(ValaVersion)
 ensure_vala_version("0.16" MINIMUM)
-
-set(VALAC_OPTIONS
-    --vapidir=${CMAKE_SOURCE_DIR}/vapi/
-)
 
 include(ValaPrecompile)
 vala_precompile(VALA_C ${EXEC_NAME}
@@ -54,8 +49,11 @@ PACKAGES
     granite
     gtk+-3.0
     gdk-3.0
-    #glepoxy
+    glepoxy
     gstreamer-1.0
+
+OPTIONS
+    --vapidir=${CMAKE_SOURCE_DIR}/vapi
 )
 
 add_executable(${EXEC_NAME} ${VALA_C})

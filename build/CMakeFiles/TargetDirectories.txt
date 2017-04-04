@@ -1,0 +1,3 @@
+/home/nine/Projects/sesh/build/CMakeFiles/rebuild_cache.dir
+/home/nine/Projects/sesh/build/CMakeFiles/edit_cache.dir
+/home/nine/Projects/sesh/build/CMakeFiles/sesh.dir

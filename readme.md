@@ -1,10 +1,9 @@
-#Don't run this: pre-pre-pre-alpha software in here
+# SESH
 
-trust me. it doesn't work without wizardry.
+OpenGL Visualizer for elementary OS. (Pre-Alpha)
 
-search FIXME in sesh.vala if you're a suparu wizard class hacker.
+### todo:
 
-###todo:
 - port to cmake
 - shader editor
 - libassimp

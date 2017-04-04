@@ -2,11 +2,12 @@
 
 OpenGL Visualizer for elementary OS. (Pre-Alpha)
 
-### todo:
+- Connects to noise
+- OpenGL rendering with GLepoxy
 
-- port to cmake
+### Todo:
+
 - shader editor
 - libassimp
 - fftw
 - requires package libgstreamer-1.0-dev
-- fix glepoxy

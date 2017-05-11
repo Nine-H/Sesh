@@ -1,18 +1,15 @@
-using GL;
-using ValaGL.Core;
-
 class Graphics : Gtk.GLArea {
-    private GLuint[] vertex_array_object = {0};
-    private GLProgram gl_program;
-    private VBO coord_vbo;
-    private VBO color_vbo;
-    private IBO element_ibo;
-    private GLint mvp_location;
+    private GL.GLuint[] vertex_array_object = {0};
+    private ValaGL.Core.GLProgram gl_program;
+    private ValaGL.Core.VBO coord_vbo;
+    private ValaGL.Core.VBO color_vbo;
+    private ValaGL.Core.IBO element_ibo;
+    private GL.GLint mvp_location;
     private float frame;
-    private GLfloat frame_uniform;
+    private GL.GLfloat frame_uniform;
     
     
-    private GLfloat[] cube_vertices = {
+    private GL.GLfloat[] cube_vertices = {
 		// front
 		-1, -1,  1,
 		 1, -1,  1,
@@ -25,7 +22,7 @@ class Graphics : Gtk.GLArea {
 		-1,  1, -1
 	};
 	
-	private GLfloat[] cube_colors = {
+	private GL.GLfloat[] cube_colors = {
 		// front colors
 		1, 0, 0,
 		0, 1, 0,
@@ -38,7 +35,7 @@ class Graphics : Gtk.GLArea {
 		1, 1, 1
 	};
 	
-    private GLushort[] cube_elements = {
+    private GL.GLushort[] cube_elements = {
 		    // front
 		    0, 1, 2,
 		    2, 3, 0,
@@ -69,17 +66,17 @@ class Graphics : Gtk.GLArea {
     private bool on_render ( ) {
         //stdout.printf ("render\n");
 
-		glGenVertexArrays(1, vertex_array_object);
-		glBindVertexArray(vertex_array_object[0]);
+		GL.glGenVertexArrays(1, vertex_array_object);
+		GL.glBindVertexArray(vertex_array_object[0]);
 		
         try {
-            gl_program = new GLProgram( //FIXME: hardcoded paths, no geom, not arbitrary length of program.
+            gl_program = new ValaGL.Core.GLProgram( //FIXME: hardcoded paths, no geom, not arbitrary length of program.
                 "/home/nine/Projects/sesh/data/vertex.glsl",
                 "/home/nine/Projects/sesh/data/fragment.glsl"
             );
-            coord_vbo = new VBO(cube_vertices);
-			color_vbo = new VBO(cube_colors);
-			element_ibo = new IBO(cube_elements);
+            coord_vbo = new ValaGL.Core.VBO(cube_vertices);
+			color_vbo = new ValaGL.Core.VBO(cube_colors);
+			element_ibo = new ValaGL.Core.IBO(cube_elements);
 			frame_uniform = frame;
             //stdout.printf("shaders compiled :D\n");
         } catch (ValaGL.Core.CoreError e) {
@@ -88,45 +85,45 @@ class Graphics : Gtk.GLArea {
 
         mvp_location = gl_program.get_uniform_location("MVP");
 		
-		glEnableVertexAttribArray(0);
+		GL.glEnableVertexAttribArray(0);
 		coord_vbo.apply_as_vertex_array(0, 3);
-		glEnableVertexAttribArray(1);
+		GL.glEnableVertexAttribArray(1);
 		color_vbo.apply_as_vertex_array(1, 3);
 		
 
-		glBindVertexArray(0);
+		GL.glBindVertexArray(0);
 
 		/// render
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.0f, 0.5f, 1.0f, 0.0f);
+		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		GL.glClearColor(0.0f, 0.5f, 1.0f, 0.0f);
 
-		var camera = new Camera ();
+		var camera = new ValaGL.Core.Camera ();
 		camera.set_perspective_projection (70.0f, 5.0f/4.0f, 0.01f, 100.0f);
 
-		var eye = Vec3.from_data (0, 2, 0);
-		var center = Vec3.from_data (0, 0, -2);
-		var up = Vec3.from_data (0, 1, 0);
+		var eye = ValaGL.Core.Vec3.from_data (0, 2, 0);
+		var center = ValaGL.Core.Vec3.from_data (0, 0, -2);
+		var up = ValaGL.Core.Vec3.from_data (0, 1, 0);
 		camera.look_at (ref eye, ref center, ref up);
 
-		var model_matrix = Mat4.identity ();
-		Vec3 translation = Vec3.from_data (0, 0, -4);
-		GeometryUtil.translate (ref model_matrix, ref translation);
-		Vec3 rotation = Vec3.from_data (0, 1, 0);
-		GeometryUtil.rotate (ref model_matrix, frame, ref rotation);
+		var model_matrix = ValaGL.Core.Mat4.identity ();
+		ValaGL.Core.Vec3 translation = ValaGL.Core.Vec3.from_data (0, 0, -4);
+		ValaGL.Core.GeometryUtil.translate (ref model_matrix, ref translation);
+		ValaGL.Core.Vec3 rotation = ValaGL.Core.Vec3.from_data (0, 1, 0);
+		ValaGL.Core.GeometryUtil.rotate (ref model_matrix, frame, ref rotation);
 
 		gl_program.make_current();
 		
-		glUniform1f ( gl_program.get_uniform_location("frame"), frame_uniform );
+		GL.glUniform1f ( gl_program.get_uniform_location("frame"), frame_uniform );
 		
 		camera.apply (mvp_location, ref model_matrix);
 
-		glBindVertexArray(vertex_array_object[0]);
-		glDrawElements((GLenum)GL_TRIANGLES, cube_elements.length, GL_UNSIGNED_SHORT, null);
+		GL.glBindVertexArray(vertex_array_object[0]);
+		GL.glDrawElements((GL.GLenum)GL.GL_TRIANGLES, cube_elements.length, GL.GL_UNSIGNED_SHORT, null);
 
-		glBindVertexArray (0);
-		glUseProgram (0);
+		GL.glBindVertexArray (0);
+		GL.glUseProgram (0);
 
-		glFlush();
+		GL.glFlush();
 
 		return true;
     }

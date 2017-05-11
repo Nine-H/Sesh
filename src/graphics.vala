@@ -133,6 +133,5 @@ class Graphics : Gtk.GLArea {
     
     public void update_scene (float framenumber) {
     	frame = framenumber;
-    	
     }
 }

@@ -8,8 +8,6 @@
 // \______/ |________/ \______/ |__/  |__/
 // sesh.vala       Nine-H GPL3+ 2016.06.15
 
-using Gtk;
-
 class Sesh : Granite.Application {
     private Gtk.Window window;
     
@@ -18,8 +16,8 @@ class Sesh : Granite.Application {
         exec_name = "sesh";
         app_years = "2017";
         about_authors = { "Nine H <nine.gentooman@gmail.com>" };
-        about_comments = "The Sesh OpenGL music vizualizer.\n\n"
-                        +"a trippy music visualiser for elementary OS\n"
+        about_comments = "High level microphone emulator.\n\n"
+                        +"Trippy music visualizer.\n"
                         +"send bitcoin to ########\n";
     }
     
@@ -28,10 +26,8 @@ class Sesh : Granite.Application {
     }
     
     public static int main ( string [] args ) {
-        Gst.init (ref args);
-        Gtk.init (ref args);
         var app = new Sesh ();
+        Gst.init (ref args);
         return app.run (args);
-        Gtk.main ();
     }
 }  

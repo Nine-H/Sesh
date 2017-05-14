@@ -18,6 +18,7 @@ class Window : Gtk.Window {
         
         fft_streamer = new FFTStreamer ();
         fft_streamer.fft_update.connect( (data)=>{
+            graphics.fft = data;
 		    print ("%f".printf(data[0]));
 		    for (int i = 0; i < (int)(60 + data[10]); i++) {
 		        print ("*");
@@ -29,7 +30,8 @@ class Window : Gtk.Window {
     
     private bool tick (Gtk.Widget widget) {
         frame_number = frame_number + 1.0f;
-        graphics.update_scene (frame_number);
+        graphics.frame = frame_number;
+        //graphics.update_scene (frame_number);
         graphics.queue_render ();
         return true;
     }

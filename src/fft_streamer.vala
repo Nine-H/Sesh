@@ -13,7 +13,7 @@ class FFTStreamer : Object {
         
         var spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
         spectrum.set_property ("multi-channel", true);
-        spectrum.set_property ("interval", 100000000);
+        spectrum.set_property ("interval", 10000000);
         spectrum.set_property ("bands", 20);
         spectrum.set_property ("post-messages", true);
         spectrum.set_property ("message-magnitude", true);

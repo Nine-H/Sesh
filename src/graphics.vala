@@ -1,6 +1,7 @@
 class Graphics : Gtk.GLArea {
     public float frame { get; set; }
     public float[] fft { get; set; }
+    public string demo_path { get; set; }
     
     private GL.GLuint[] vertex_array_object = {0};
     private ValaGL.Core.GLProgram gl_program;

@@ -13,6 +13,7 @@ class Sesh : Granite.Application {
     
     construct {
         program_name = "S E S H 🜛";
+        build_version = "0.0001a";
         exec_name = "sesh";
         app_years = "2017";
         about_authors = { "Nine H <nine.gentooman@gmail.com>" };
@@ -31,4 +32,4 @@ class Sesh : Granite.Application {
         Gst.init (ref args);
         return app.run (args);
     }
-}  
+}

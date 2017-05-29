@@ -55,6 +55,8 @@ PACKAGES
 
 OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi
+    -g
+    --save-temps
 )
 
 add_executable(${EXEC_NAME} ${VALA_C})

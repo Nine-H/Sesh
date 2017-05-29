@@ -9,7 +9,6 @@
 // sesh.vala       Nine-H GPL3+ 2016.06.15
 
 class Sesh : Granite.Application {
-    private Gtk.Window window;
     
     construct {
         program_name = "S E S H 🜛";
@@ -24,7 +23,8 @@ class Sesh : Granite.Application {
     }
     
     public override void activate () {
-        window = new Window ();
+        var window = new SeshWindow ();
+        window.show_all();
     }
     
     public static int main ( string [] args ) {

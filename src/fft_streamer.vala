@@ -1,8 +1,7 @@
-class FFTStreamer : Object {
+class FFTStreamer {
     public signal void fft_update (Value data);
     
     private Gst.Pipeline pipeline;
-	private MainLoop loop = new MainLoop ();
     
 	public void play () {
 		pipeline = new Gst.Pipeline ("pipeline");
@@ -30,13 +29,10 @@ class FFTStreamer : Object {
         bus.add_watch (0, bus_callback);
         
         pipeline.set_state (Gst.State.PLAYING);
-        
-        loop.run ();
 	}
 	
 	public void close_stream () {
 	    pipeline.set_state (Gst.State.NULL);
-		loop.quit ();
 	}
 	
 	private bool bus_callback (Gst.Bus bus, Gst.Message message) {

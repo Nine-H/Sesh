@@ -1,4 +1,6 @@
 class Graphics : Gtk.GLArea {
+	public signal void gl_error (bool error, string message);
+	
     public float frame { get; set; }
     public Value fft { get; set; }
     public string demo_path { get; set; }
@@ -81,9 +83,10 @@ class Graphics : Gtk.GLArea {
 			element_ibo = new ValaGL.Core.IBO(cube_elements);
 			frame_uniform = frame;
 			fft_uniform = value_dump(fft);
+			gl_error(false, "");
         } catch (ValaGL.Core.CoreError e) {
-            stdout.printf("CoreError: %s\n", e.message);
-            
+            //stdout.printf("CoreError: %s\n", e.message);
+            gl_error(true, e.message);
         }
 
         mvp_location = gl_program.get_uniform_location("MVP");

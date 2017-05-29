@@ -1,5 +1,5 @@
 class FFTStreamer : Object {
-    public signal void fft_update (float[] data);
+    public signal void fft_update (Value data);
     
     private Gst.Pipeline pipeline;
 	private MainLoop loop = new MainLoop ();
@@ -9,12 +9,14 @@ class FFTStreamer : Object {
 
 		var source = Gst.ElementFactory.make ("pulsesrc", "source");
         source.set_property ("client-name", "SESH");
+        //source.set_property ("device", "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor");
+        //source.set_property ("device", "alsa_output.pci-0000_80_01.0.analog-stereo.monitor");
         //FIXME: pulling fucking mic audio like a fucking shit. how the fuck do I get a specific client?
         
         var spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
         spectrum.set_property ("multi-channel", true);
         spectrum.set_property ("interval", 10000000);
-        spectrum.set_property ("bands", 20);
+        spectrum.set_property ("bands", 128);
         spectrum.set_property ("post-messages", true);
         spectrum.set_property ("message-magnitude", true);
         
@@ -40,15 +42,11 @@ class FFTStreamer : Object {
 	private bool bus_callback (Gst.Bus bus, Gst.Message message) {
 		switch (message.type) {
 		    case Gst.MessageType.ELEMENT:
-		        GLib.Value magnitude = message.get_structure ().copy ().get_value ("magnitude");
-		        float fft_array[20];
-		        for ( int i = 0; i < 20; i++) {
-		            fft_array[i] = (float)Gst.ValueArray.get_value(Gst.ValueArray.get_value(magnitude, 0), i);
-	            }
-	            fft_update(fft_array);
+		        Value magnitude = message.get_structure ().copy ().get_value ("magnitude");
+	            fft_update(magnitude);
 		        break;
 			case Gst.MessageType.ERROR:
-				GLib.Error err;
+				Error err;
 				string debug;
 				message.parse_error (out err, out debug);
 				warning (err.message);

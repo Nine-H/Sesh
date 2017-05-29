@@ -1,5 +1,5 @@
 #version 330 core
-uniform float fft[20];
+uniform float fft[100];
 
 in vec3 f_color;
 void main() {

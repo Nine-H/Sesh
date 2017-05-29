@@ -12,23 +12,21 @@ class Window : Gtk.Window {
         
         graphics = new Graphics ();
         graphics.add_tick_callback (tick);
+        graphics.demo_path = "/home/nine/Projects/sesh/data/";
         this.add (graphics);
         
         var demo_switcher = new DemoSwitcher();
-        headerbar.pack_end(demo_switcher);
-        demo_switcher.demo_changed.connect ((path) => {print(path);});
+        headerbar.set_custom_title(demo_switcher);
+        demo_switcher.demo_changed.connect ((path) => {graphics.demo_path = path;});
+        
+        var settings_button = new Gtk.Button.from_icon_name("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
+        headerbar.pack_end(settings_button);
         
         this.show_all ();
 
         fft_streamer = new FFTStreamer ();
         fft_streamer.fft_update.connect( (data)=>{
             graphics.fft = data;
-            //FIXME: delete this when fft data structure is finalised.
-		    //print ("%f".printf(data[0]));
-		    //for (int i = 0; i < (int)(60 + data[10]); i++) {
-		    //   print ("*");
-	        //}
-		    //print ("\n");
 	    });
 		fft_streamer.play ();
     }

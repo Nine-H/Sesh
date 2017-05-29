@@ -1,7 +1,8 @@
 class Graphics : Gtk.GLArea {
     public float frame { get; set; }
-    public float[] fft { get; set; }
+    public Value fft { get; set; }
     public string demo_path { get; set; }
+    public bool compile_success { get; private set; }
     
     private GL.GLuint[] vertex_array_object = {0};
     private ValaGL.Core.GLProgram gl_program;
@@ -61,32 +62,28 @@ class Graphics : Gtk.GLArea {
     
     
     public Graphics () {
-        fft = new float[20];
         set_size_request ( 512, 512 );
         has_depth_buffer = true;
         render.connect ( on_render );
     }
     
     private bool on_render ( ) {
-        //print (fft[0].to_string());
-        //stdout.printf ("render\n");
-
 		GL.glGenVertexArrays(1, vertex_array_object);
 		GL.glBindVertexArray(vertex_array_object[0]);
 		
         try {
-            gl_program = new ValaGL.Core.GLProgram( //FIXME: hardcoded paths, no geom, not arbitrary length of program.
-                "/home/nine/Projects/sesh/data/vertex.glsl",
-                "/home/nine/Projects/sesh/data/fragment.glsl"
+            gl_program = new ValaGL.Core.GLProgram(
+                demo_path + "vertex.glslv",
+                demo_path + "fragment.glslf"
             );
             coord_vbo = new ValaGL.Core.VBO(cube_vertices);
 			color_vbo = new ValaGL.Core.VBO(cube_colors);
 			element_ibo = new ValaGL.Core.IBO(cube_elements);
 			frame_uniform = frame;
-			fft_uniform = fft;
-            //stdout.printf("shaders compiled :D\n");
+			fft_uniform = value_dump(fft);
         } catch (ValaGL.Core.CoreError e) {
             stdout.printf("CoreError: %s\n", e.message);
+            
         }
 
         mvp_location = gl_program.get_uniform_location("MVP");
@@ -120,7 +117,7 @@ class Graphics : Gtk.GLArea {
 		gl_program.make_current();
 		
 		GL.glUniform1f ( gl_program.get_uniform_location("frame"), frame_uniform );
-		GL.glUniform1fv ( gl_program.get_uniform_location("fft"), 20, fft_uniform );//FIXME
+		GL.glUniform1fv ( gl_program.get_uniform_location("fft"), 128, fft_uniform );//FIXME
 		
 		camera.apply (mvp_location, ref model_matrix);
 
@@ -133,5 +130,13 @@ class Graphics : Gtk.GLArea {
 		GL.glFlush();
 
 		return true;
+    }
+    
+    private float[] value_dump (Value in) {
+    	float[] this_dump = new float[128];
+        for ( int i = 0; i < 128; i++) {
+            this_dump[i] = (float)Gst.ValueArray.get_value(Gst.ValueArray.get_value(in, 0), i);
+        }
+        return this_dump;
     }
 }

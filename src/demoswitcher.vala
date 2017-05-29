@@ -1,11 +1,5 @@
-//class:
-//open path
-//get list of demos
-//throw signal demo_changed(path) when used.
-
 class DemoSwitcher : Gtk.ComboBox {
     public signal void demo_changed (string path);
-    //FIXME: make this public when gsettings and settings dialog are in.
     private string base_path = "/home/nine/Projects/sesh/data";
     
     Gtk.TreeIter iter;
@@ -19,7 +13,6 @@ class DemoSwitcher : Gtk.ComboBox {
             FileInfo file_info;
             while ((file_info = enumerator.next_file()) != null) {
                 if (file_info.get_file_type () == FileType.DIRECTORY) {
-                    //Gtk.TreeIter iter;
                     demo_list.append(out iter);
                     demo_list.set(iter, 0, file_info.get_name());
                     print(file_info.get_name());
@@ -41,7 +34,7 @@ class DemoSwitcher : Gtk.ComboBox {
 			Value demo;
 			this.get_active_iter (out iter);
 			demo_list.get_value (iter, 0, out demo);
-			demo_changed(base_path + "/" + demo.get_string());
+			demo_changed(base_path + "/" + demo.get_string() + "/");
 		});
     }
 }

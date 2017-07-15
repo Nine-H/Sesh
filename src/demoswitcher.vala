@@ -1,4 +1,15 @@
+//  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
+// /$$__  $$| $$_____/ /$$__  $$| $$  | $$
+//| $$  \__/| $$      | $$  \__/| $$  | $$
+//|  $$$$$$ | $$$$$   |  $$$$$$ | $$$$$$$$
+// \____  $$| $$__/    \____  $$| $$__  $$
+// /$$  \ $$| $$       /$$  \ $$| $$  | $$
+//|  $$$$$$/| $$$$$$$$|  $$$$$$/| $$  | $$
+// \______/ |________/ \______/ |__/  |__/
+// sesh.vala       Nine-H GPL3+ 2016.06.15
+
 class DemoSwitcher : Gtk.ComboBox {
+
     public signal void demo_changed (string path);
     private string base_path = "/home/nine/Projects/sesh/data";
     
@@ -24,17 +35,17 @@ class DemoSwitcher : Gtk.ComboBox {
         }
         
         Gtk.CellRendererText renderer = new Gtk.CellRendererText ();
-		this.pack_start (renderer, true);
-		this.add_attribute (renderer, "text", 0);
-		this.active = 0;
-		
-		this.model = demo_list;
+        this.pack_start (renderer, true);
+        this.add_attribute (renderer, "text", 0);
+        this.active = 0;
 
-		this.changed.connect (() => {
-			Value demo;
-			this.get_active_iter (out iter);
-			demo_list.get_value (iter, 0, out demo);
-			demo_changed(base_path + "/" + demo.get_string() + "/");
-		});
+        this.model = demo_list;
+
+        this.changed.connect (() => {
+            Value demo;
+            this.get_active_iter (out iter);
+            demo_list.get_value (iter, 0, out demo);
+            demo_changed(base_path + "/" + demo.get_string() + "/");
+        });
     }
 }

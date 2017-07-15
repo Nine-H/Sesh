@@ -1,3 +1,4 @@
+
 //  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
 // /$$__  $$| $$_____/ /$$__  $$| $$  | $$
 //| $$  \__/| $$      | $$  \__/| $$  | $$
@@ -6,27 +7,24 @@
 // /$$  \ $$| $$       /$$  \ $$| $$  | $$
 //|  $$$$$$/| $$$$$$$$|  $$$$$$/| $$  | $$
 // \______/ |________/ \______/ |__/  |__/
-// sesh.vala       Nine-H GPL3+ 2016.06.15
+// sesh.vala    (c)Nine-H GPL3+ 2016.06.15
 
 class Sesh : Granite.Application {
-    
+
     construct {
-        program_name = "S E S H 🜛";
-        build_version = "0.0001a";
+        program_name = "Sesh";
+        build_version = "0.01";
         exec_name = "sesh";
         app_years = "2017";
         about_authors = { "Nine H <nine.gentooman@gmail.com>" };
-        about_comments = "f e a t u r e s\n"
-                        +"high level microphone emulation\n"
-                        +"a e s t h e t i c  music visualizer\n"
-                        +"send bitcoin to ########\n";
+        about_comments = "hell to write";
     }
-    
+
     public override void activate () {
         var window = new SeshWindow ();
         window.show_all();
     }
-    
+
     public static int main ( string [] args ) {
         var app = new Sesh ();
         Gst.init (ref args);

@@ -1,14 +1,27 @@
+
+//  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
+// /$$__  $$| $$_____/ /$$__  $$| $$  | $$
+//| $$  \__/| $$      | $$  \__/| $$  | $$
+//|  $$$$$$ | $$$$$   |  $$$$$$ | $$$$$$$$
+// \____  $$| $$__/    \____  $$| $$__  $$
+// /$$  \ $$| $$       /$$  \ $$| $$  | $$
+//|  $$$$$$/| $$$$$$$$|  $$$$$$/| $$  | $$
+// \______/ |________/ \______/ |__/  |__/
+// sesh.vala    (c)Nine-H GPL3+ 2016.06.15
+
 class SeshWindow : Gtk.Window {
+
+    public float frame { get; set; }
+    
     private Graphics graphics;
     private FFTStreamer fft_streamer;
-    private float frame_number;
     
     public SeshWindow () {
-    	var headerbar = new Gtk.HeaderBar ();
-    	this.set_titlebar (headerbar);
+        var headerbar = new Gtk.HeaderBar ();
+        this.set_titlebar (headerbar);
         headerbar.set_title ("Sesh");
         headerbar.set_show_close_button (true);
-    	this.destroy.connect (on_quit);
+        this.destroy.connect (on_quit);
         
         graphics = new Graphics ();
         graphics.add_tick_callback (tick);
@@ -32,24 +45,23 @@ class SeshWindow : Gtk.Window {
         headerbar.pack_end(settings_button);
 
         fft_streamer = new FFTStreamer ();
-        fft_streamer.fft_update.connect( (data)=>{
-            graphics.fft = data;
-	    });
-		fft_streamer.play ();
-		
-		this.show_all ();
-		Gtk.main();
+        fft_streamer.bind_property ("magnitude", graphics, "fft", BindingFlags.DEFAULT);
+        fft_streamer.play ();
+        
+        this.bind_property("frame", graphics, "frame", BindingFlags.DEFAULT);
+
+        this.show_all ();
+        Gtk.main();
     }
     
     private bool tick (Gtk.Widget widget) {
-        frame_number = frame_number + 1.0f;
-        graphics.frame = frame_number;
+        frame = frame + 1;
         graphics.queue_render ();
         return true;
     }
     
     private void on_quit () {
-    	fft_streamer.close_stream ();
-    	Gtk.main_quit ();
+        fft_streamer.close_stream ();
+        Gtk.main_quit ();
     }
 }

@@ -1,41 +1,67 @@
-class Window : Gtk.Window {
+
+//  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
+// /$$__  $$| $$_____/ /$$__  $$| $$  | $$
+//| $$  \__/| $$      | $$  \__/| $$  | $$
+//|  $$$$$$ | $$$$$   |  $$$$$$ | $$$$$$$$
+// \____  $$| $$__/    \____  $$| $$__  $$
+// /$$  \ $$| $$       /$$  \ $$| $$  | $$
+//|  $$$$$$/| $$$$$$$$|  $$$$$$/| $$  | $$
+// \______/ |________/ \______/ |__/  |__/
+// sesh.vala    (c)Nine-H GPL3+ 2016.06.15
+
+class SeshWindow : Gtk.Window {
+
+    public float frame { get; set; }
+    
     private Graphics graphics;
     private FFTStreamer fft_streamer;
-    private float frame_number;
     
-    public Window () {
-    	var headerbar = new Gtk.HeaderBar ();
-    	headerbar.get_style_context().add_class("sesh-headerbar");
-    	this.set_titlebar (headerbar);
+    public SeshWindow () {
+        var headerbar = new Gtk.HeaderBar ();
+        this.set_titlebar (headerbar);
         headerbar.set_title ("Sesh");
         headerbar.set_show_close_button (true);
-    	this.destroy.connect (on_quit);
+        this.destroy.connect (on_quit);
         
         graphics = new Graphics ();
         graphics.add_tick_callback (tick);
+        graphics.demo_path = "/home/nine/Projects/sesh/data/";
+        graphics.gl_error.connect ((error, message) => {
+            if (error) {
+                headerbar.set_title("Error!");
+                headerbar.subtitle = message;
+            } else {
+                headerbar.set_title("Sesh");
+                headerbar.subtitle = null;
+            }
+        });
         this.add (graphics);
-        this.show_all ();
         
+        var demo_switcher = new DemoSwitcher();
+        headerbar.pack_start(demo_switcher);
+        demo_switcher.demo_changed.connect ((path) => {graphics.demo_path = path;});
+        
+        var settings_button = new Gtk.Button.from_icon_name("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
+        headerbar.pack_end(settings_button);
+
         fft_streamer = new FFTStreamer ();
-        fft_streamer.fft_update.connect( (data)=>{
-		    print ("%f".printf(data[0]));
-		    for (int i = 0; i < (int)(60 + data[10]); i++) {
-		        print ("*");
-	        }
-		    print ("\n");
-	    });
-		fft_streamer.play ();
+        fft_streamer.bind_property ("magnitude", graphics, "fft", BindingFlags.DEFAULT);
+        fft_streamer.play ();
+        
+        this.bind_property("frame", graphics, "frame", BindingFlags.DEFAULT);
+
+        this.show_all ();
+        Gtk.main();
     }
     
     private bool tick (Gtk.Widget widget) {
-        frame_number = frame_number + 1.0f;
-        graphics.update_scene (frame_number);
+        frame = frame + 1;
         graphics.queue_render ();
         return true;
     }
     
     private void on_quit () {
-    	fft_streamer.close_stream ();
-    	Gtk.main_quit ();
+        fft_streamer.close_stream ();
+        Gtk.main_quit ();
     }
 }

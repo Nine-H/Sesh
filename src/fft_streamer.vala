@@ -1,22 +1,34 @@
-class FFTStreamer : Object {
-    public signal void fft_update (float[] data);
-    
-    private Gst.Pipeline pipeline;
-	private MainLoop loop = new MainLoop ();
-    
-	public void play () {
-		pipeline = new Gst.Pipeline ("pipeline");
 
-		var source = Gst.ElementFactory.make ("pulsesrc", "source");
-        source.set_property ("client-name", "SESH");
-        //FIXME: pulling fucking mic audio like a fucking shit. how the fuck do I get a specific client?
+//  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
+// /$$__  $$| $$_____/ /$$__  $$| $$  | $$
+//| $$  \__/| $$      | $$  \__/| $$  | $$
+//|  $$$$$$ | $$$$$   |  $$$$$$ | $$$$$$$$
+// \____  $$| $$__/    \____  $$| $$__  $$
+// /$$  \ $$| $$       /$$  \ $$| $$  | $$
+//|  $$$$$$/| $$$$$$$$|  $$$$$$/| $$  | $$
+// \______/ |________/ \______/ |__/  |__/
+// sesh.vala    (c)Nine-H GPL3+ 2016.06.15
+
+class FFTStreamer : GLib.Object {
+
+    public Value magnitude { get; set; }
+
+    private Gst.Pipeline pipeline;
+    
+    public void play () {
+        pipeline = new Gst.Pipeline ("pipeline");
         
-        var spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
-        spectrum.set_property ("multi-channel", true);
-        spectrum.set_property ("interval", 100000000);
-        spectrum.set_property ("bands", 20);
-        spectrum.set_property ("post-messages", true);
-        spectrum.set_property ("message-magnitude", true);
+        dynamic Gst.Element source = Gst.ElementFactory.make ("pulsesrc", "source");
+        source.client_name = "Sesh";
+        source.device = "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor";
+        //FIXME: figure out some way to unmute monitor of built in stereo from the app.
+        
+        dynamic Gst.Element spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
+        spectrum.multi_channel = true;
+        spectrum.interval = 10000000;
+        spectrum.bands = 128;
+        spectrum.post_messages = true;
+        spectrum.message_magnitude = true;
         
         var sink = Gst.ElementFactory.make ("fakesink", "sink");
         
@@ -28,35 +40,26 @@ class FFTStreamer : Object {
         bus.add_watch (0, bus_callback);
         
         pipeline.set_state (Gst.State.PLAYING);
-        
-        loop.run ();
-	}
-	
-	public void close_stream () {
-	    pipeline.set_state (Gst.State.NULL);
-		loop.quit ();
-	}
-	
-	private bool bus_callback (Gst.Bus bus, Gst.Message message) {
-		switch (message.type) {
-		    case Gst.MessageType.ELEMENT:
-		        GLib.Value magnitude = message.get_structure ().copy ().get_value ("magnitude");
-		        float fft_array[20];
-		        for ( int i = 0; i < 20; i++) {
-		            fft_array[i] = (float)Gst.ValueArray.get_value(Gst.ValueArray.get_value(magnitude, 0), i);
-	            }
-	            fft_update(fft_array);
-		        break;
-			case Gst.MessageType.ERROR:
-				GLib.Error err;
-				string debug;
-				message.parse_error (out err, out debug);
-				warning (err.message);
-				break;
-       		default:
-       			break;
-		}
-		
-		return true;
-	}
+    }
+    
+    public void close_stream () {
+        pipeline.set_state (Gst.State.NULL);
+    }
+    
+    private bool bus_callback (Gst.Bus bus, Gst.Message message) {
+        switch (message.type) {
+            case Gst.MessageType.ELEMENT:
+                magnitude = message.get_structure().copy().get_value("magnitude");
+                break;
+            case Gst.MessageType.ERROR:
+                Error err;
+                string debug;
+                message.parse_error (out err, out debug);
+                warning (err.message);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
 }

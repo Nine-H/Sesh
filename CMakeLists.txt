@@ -40,6 +40,7 @@ vala_precompile(VALA_C ${EXEC_NAME}
     ValaGL.Core/IBO.vala
     ValaGL.Core/CoreError.vala
     #ValaGL.Core/Util.vala
+    src/demoswitcher.vala
     src/fft_streamer.vala
     src/graphics.vala
     src/window.vala
@@ -54,6 +55,8 @@ PACKAGES
 
 OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi
+    -g
+    --save-temps
 )
 
 add_executable(${EXEC_NAME} ${VALA_C})

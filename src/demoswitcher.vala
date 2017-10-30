@@ -1,17 +1,6 @@
-//  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
-// /$$__  $$| $$_____/ /$$__  $$| $$  | $$
-//| $$  \__/| $$      | $$  \__/| $$  | $$
-//|  $$$$$$ | $$$$$   |  $$$$$$ | $$$$$$$$
-// \____  $$| $$__/    \____  $$| $$__  $$
-// /$$  \ $$| $$       /$$  \ $$| $$  | $$
-//|  $$$$$$/| $$$$$$$$|  $$$$$$/| $$  | $$
-// \______/ |________/ \______/ |__/  |__/
-// sesh.vala       Nine-H GPL3+ 2016.06.15
-
 class DemoSwitcher : Gtk.ComboBox {
-
     public signal void demo_changed (string path);
-    private string base_path = "/home/nine/Projects/sesh/data";
+    private string base_path = "../data";
     
     Gtk.TreeIter iter;
     
@@ -26,8 +15,6 @@ class DemoSwitcher : Gtk.ComboBox {
                 if (file_info.get_file_type () == FileType.DIRECTORY) {
                     demo_list.append(out iter);
                     demo_list.set(iter, 0, file_info.get_name());
-                    print(file_info.get_name());
-                    print("\n");
                 }
             }
         } catch (Error e) {

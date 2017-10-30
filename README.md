@@ -1,9 +1,18 @@
 # SESH
 
+> never do what I have done
+> never use undocumented apis and trash code from 2013 to learn opengl
+
 OpenGL Visualizer for elementary OS. (Pre-Alpha)
 
 - Connects to noise
 - OpenGL rendering with GLepoxy
+
+## Building
+
+```
+sudo apt install libgstreamer-1.0-dev
+```
 
 ## Resources
 

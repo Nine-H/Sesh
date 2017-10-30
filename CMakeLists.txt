@@ -32,14 +32,7 @@ ensure_vala_version("0.16" MINIMUM)
 
 include(ValaPrecompile)
 vala_precompile(VALA_C ${EXEC_NAME}
-    ValaGL.Core/Camera.vala
-    ValaGL.Core/MatrixMath.vala
-    ValaGL.Core/GeometryUtil.vala
-    ValaGL.Core/GLProgram.vala
-    ValaGL.Core/VBO.vala
-    ValaGL.Core/IBO.vala
-    ValaGL.Core/CoreError.vala
-    #ValaGL.Core/Util.vala
+    src/settings.vala
     src/demoswitcher.vala
     src/fft_streamer.vala
     src/graphics.vala

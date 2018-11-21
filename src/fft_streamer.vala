@@ -1,4 +1,3 @@
-
 //  /$$$$$$  /$$$$$$$$  /$$$$$$  /$$   /$$
 // /$$__  $$| $$_____/ /$$__  $$| $$  | $$
 //| $$  \__/| $$      | $$  \__/| $$  | $$
@@ -12,15 +11,14 @@
 class FFTStreamer : GLib.Object {
 
     public Value magnitude { get; set; }
-
     private Gst.Pipeline pipeline;
     
     public void play () {
-        pipeline = new Gst.Pipeline ("pipeline");
-        
+        //FIXME: just use alsa mane
         dynamic Gst.Element source = Gst.ElementFactory.make ("pulsesrc", "source");
         source.client_name = "Sesh";
-        source.device = "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor";
+        //source.device = "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor";
+        source.device = "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor";
         //FIXME: figure out some way to unmute monitor of built in stereo from the app.
         
         dynamic Gst.Element spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
@@ -32,6 +30,7 @@ class FFTStreamer : GLib.Object {
         
         var sink = Gst.ElementFactory.make ("fakesink", "sink");
         
+        pipeline = new Gst.Pipeline ("pipeline");
         pipeline.add_many (source, spectrum, sink);
         source.link (spectrum);
         spectrum.link (sink);

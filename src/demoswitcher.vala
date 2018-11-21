@@ -11,12 +11,13 @@
 class DemoSwitcher : Gtk.ComboBox {
 
     public signal void demo_changed (string path);
+    //FIXME: hardcoded
     private string base_path = "/home/nine/Projects/sesh/data";
-    
-    Gtk.TreeIter iter;
+    private Gtk.ListStore demo_list;
+    private Gtk.TreeIter iter;
     
     public DemoSwitcher () {
-        var demo_list = new Gtk.ListStore(1, typeof(string));
+        demo_list = new Gtk.ListStore(1, typeof(string));
         
         try {
             var directory = File.new_for_path(base_path);
@@ -26,8 +27,6 @@ class DemoSwitcher : Gtk.ComboBox {
                 if (file_info.get_file_type () == FileType.DIRECTORY) {
                     demo_list.append(out iter);
                     demo_list.set(iter, 0, file_info.get_name());
-                    print(file_info.get_name());
-                    print("\n");
                 }
             }
         } catch (Error e) {
@@ -35,17 +34,18 @@ class DemoSwitcher : Gtk.ComboBox {
         }
         
         Gtk.CellRendererText renderer = new Gtk.CellRendererText ();
+        
         this.pack_start (renderer, true);
         this.add_attribute (renderer, "text", 0);
         this.active = 0;
-
         this.model = demo_list;
-
-        this.changed.connect (() => {
-            Value demo;
-            this.get_active_iter (out iter);
-            demo_list.get_value (iter, 0, out demo);
-            demo_changed(base_path + "/" + demo.get_string() + "/");
-        });
+        this.changed.connect (change_demo);
+    }
+    
+    public void change_demo () {
+        Value demo;
+        this.get_active_iter (out iter);
+        demo_list.get_value (iter, 0, out demo);
+        demo_changed("%s/%s/".printf(base_path, demo.get_string()));
     }
 }
